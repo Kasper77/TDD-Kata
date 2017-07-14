@@ -1,13 +1,19 @@
 package domain;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Observable;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Mocked;
 import mockit.Tested;
+import mockit.integration.junit4.JMockit;
 
+@RunWith(JMockit.class)
 public class StringCalculatorSpec {
 
 	private static final int SUM_LIMIT = 1000;
@@ -113,5 +119,14 @@ public class StringCalculatorSpec {
 		new Expectations() {{ mockedWebservice.report("negatives not allowed!"); times = 1;}};
 
 		unit.sum(input);
+	}
+
+	@Test
+	public void sum_whenTipicalOutputToConsole(@Mocked ConsoleView mockedConsoleView) throws Exception {
+		String input = "//[***]\n1***2***5";
+		new Expectations() {{ mockedConsoleView.update( (Observable) withNotNull(), any); times = 1;}};
+		unit.addObserver(mockedConsoleView);
+
+		assertTrue(unit.sum(input) == 8);
 	}
 }

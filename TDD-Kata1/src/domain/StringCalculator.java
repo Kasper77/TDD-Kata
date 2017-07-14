@@ -1,23 +1,33 @@
 package domain;
 
-public class StringCalculator {
+import java.util.Observable;
+
+import com.sun.swing.internal.plaf.synth.resources.synth;
+
+public class StringCalculator extends Observable {
 
 	private int sumLimit = Integer.MAX_VALUE;
 	private StringUtil string = new StringUtil();
 	private ILogger logger;
 	private IWebservice webservice;
+	private int result;
 
 	public StringCalculator(int sumLimit) {
 		this.sumLimit  = sumLimit;
 	}
 
 	public int sum(String input) throws StringCalculatorException {
-//		Test this with JmockIt!!! 
-//		ThisObject to = new ThisObject();
-//		to.hello("Hi");
 		if (input.isEmpty())
 			return 0;
-		return makeSum(string.split(input));
+		result = makeSum(string.split(input));
+
+		setChanged();
+		notifyObservers();
+		return result; 
+	}
+
+	public int getResult () {
+		return this.result;
 	}
 
 	public void setLogger(ILogger logger) {
